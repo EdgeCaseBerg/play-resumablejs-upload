@@ -1,0 +1,26 @@
+@()
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>File Upload Example</title>
+	</head>
+	<body>
+		<a id="browseButton" href="#">Browse and Upload</a>
+		<a id="upLoadButton" href="#">Upload</a>
+	</body>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/resumable.js/1.0.2/resumable.min.js">
+	</script>
+	<script type="text/javascript">
+		window.onload = function() {
+			var r = new Resumable({
+				target:'/upload', 
+				query:{}
+			});
+			r.assignBrowse(document.getElementById('browseButton'));
+			document.getElementById('upLoadButton').onclick = function(){
+				r.upload()
+			}
+		}
+	</script>
+</html>

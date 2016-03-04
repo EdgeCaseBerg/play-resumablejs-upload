@@ -1,0 +1,4 @@
+GET / controllers.FileUploadController.index
+
+POST /upload controllers.FileUploadController.upload
+GET /upload controllers.FileUploadController.uploadTest
