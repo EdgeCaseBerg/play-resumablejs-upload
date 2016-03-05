@@ -1,6 +1,6 @@
 package service
 
-import java.io.RandomAccessFile
+import java.io.{ File, RandomAccessFile }
 import model._
 
 import java.util.concurrent.{ ConcurrentMap, ConcurrentHashMap }
@@ -33,6 +33,12 @@ class FileUploadService(serviceSavePath: String) {
 		} else {
 			uploadedParts.put(key, Set(fileInfo))
 		}
+	}
+
+	def isPartialUploadComplete(fileInfo: FileUploadInfo): Boolean = {
+		/* Todo: Should we open the RAF and check it? */
+		val key = fileNameFor(fileInfo)
+		uploadedParts.get(key).contains(fileInfo)
 	}
 
 	def isUploadComplete(fileInfo: FileUploadInfo): Boolean = {
