@@ -22,9 +22,12 @@ class FileUploadService(serviceSavePath: String) {
 		val partialFile = new RandomAccessFile(fileNameFor(fileInfo), "rw")
 		val offset = (fileInfo.resumableChunkNumber - 1) * fileInfo.resumableChunkSize
 
-		partialFile.seek(offset)
-		partialFile.write(filePart, offset, filePart.length)
-		partialFile.close()
+		try {
+			partialFile.seek(offset)
+			partialFile.write(filePart, offset, filePart.length)
+		} finally {
+			partialFile.close()
+		}
 
 		val key = fileNameFor(fileInfo)
 		if (uploadedParts.containsKey(key)) {
