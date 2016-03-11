@@ -48,6 +48,7 @@ class FileUploadServiceTest extends FlatSpec {
 	"The FileUploadService" should "handle parts of a file" in withFile { (tmpFile, fileUploadService) =>
 		val fileSegments = FileToFileUploadInfos(tmpFile)
 		println(fileSegments)
+		//Write test along the lines of: call savePartialFile for each segment, saving down the byte array for that chunk and then checking that the service tracks it correctly and the RAF file itself has the bytes put into place
 		fail("not implemented")
 	}
 }
