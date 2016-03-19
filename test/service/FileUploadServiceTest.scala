@@ -48,10 +48,18 @@ class FileUploadServiceTest extends FlatSpec {
 	"The FileUploadService" should "handle parts of a file" in withFile { (tmpFile, fileUploadService) =>
 		val fileSegments = FileToFileUploadInfos(tmpFile)
 		println(fileSegments)
+		val allBytes = Files.readAllBytes(tmpFile.toPath())
 		fileSegments.foreach { segment =>
 			assertResult(false, "Should not show as complete before upload")(fileUploadService.isPartialUploadComplete(segment))
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+			assertResult(segment.resumableChunkNumber == fileSegments.takeRight(1)(0).resumableChunkNumber)(fileUploadService.isUploadComplete(segment))
 		}
-		//Write test along the lines of: call savePartialFile for each segment, saving down the byte array for that chunk and then checking that the service tracks it correctly and the RAF file itself has the bytes put into place
-		fail("not implemented")
+		val rafBytes = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
+		assertResult(allBytes)(rafBytes)
 	}
 }
