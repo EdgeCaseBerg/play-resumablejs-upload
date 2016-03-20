@@ -17,7 +17,6 @@ object FileToFileUploadInfos {
 		while (amountLeft > 0) {
 			var currentChunkSize = Math.abs((bytes.length - (chunkNo * chunkSize)) % chunkSize)
 			if (currentChunkSize == 0) currentChunkSize = chunkSize
-			println(currentChunkSize)
 			val fileInfo = FileUploadInfo(
 				chunkNo,
 				currentChunkSize,
