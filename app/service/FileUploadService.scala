@@ -24,7 +24,7 @@ class FileUploadService(serviceSavePath: String) {
 
 		try {
 			partialFile.seek(offset)
-			partialFile.write(filePart, offset, filePart.length)
+			partialFile.write(filePart, 0, filePart.length)
 		} finally {
 			partialFile.close()
 		}
