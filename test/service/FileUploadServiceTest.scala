@@ -118,4 +118,16 @@ class FileUploadServiceTest extends FlatSpec {
 		val rafBytes2 = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
 		assertResult(rafBytes)(rafBytes2)
 	}
+
+	it should "reject uploaded bytes with missing parts" in withFile { (tmpFile, fileUploadService) =>
+		val fileSegments = FileToFileUploadInfos(tmpFile)
+		val allBytes = Files.readAllBytes(tmpFile.toPath())
+		fileSegments.foreach { segment =>
+			assertResult(false, "Should not show as complete before upload")(fileUploadService.isPartialUploadComplete(segment))
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload.drop(1), segment)
+			assertResult(false, "Should not show as complete before upload")(fileUploadService.isPartialUploadComplete(segment))
+		}
+		assertResult(false)(new File(fileUploadService.fileNameFor(fileSegments(0))).exists())
+	}
 }
