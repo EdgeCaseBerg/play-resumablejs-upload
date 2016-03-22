@@ -53,9 +53,10 @@ class FileUploadService(serviceSavePath: String) {
 		val possibleFinishedFile = new RandomAccessFile(key, "r")
 		val fileLength = possibleFinishedFile.length()
 		if (fileLength == fileInfo.resumableTotalSize && uploadedParts.containsKey(key)) {
-			uploadedParts.get(key).size == fileInfo.totalChunks
+			uploadedParts.get(key).size == fileInfo.totalChunks.toInt
+		} else {
+			false
 		}
-		return false
 	}
 
 }

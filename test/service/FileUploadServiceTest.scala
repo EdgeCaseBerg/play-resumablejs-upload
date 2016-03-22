@@ -46,7 +46,6 @@ class FileUploadServiceTest extends FlatSpec {
 
 	"The FileUploadService" should "handle parts of a file" in withFile { (tmpFile, fileUploadService) =>
 		val fileSegments = FileToFileUploadInfos(tmpFile)
-		println(fileSegments)
 		val allBytes = Files.readAllBytes(tmpFile.toPath())
 		fileSegments.foreach { segment =>
 			assertResult(false, "Should not show as complete before upload")(fileUploadService.isPartialUploadComplete(segment))
