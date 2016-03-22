@@ -19,6 +19,9 @@ class FileUploadService(serviceSavePath: String) {
 	}
 
 	def savePartialFile(filePart: Array[Byte], fileInfo: FileUploadInfo) {
+		if (filePart.length != fileInfo.resumableChunkSize) {
+			return
+		}
 		val partialFile = new RandomAccessFile(fileNameFor(fileInfo), "rw")
 		val offset = (fileInfo.resumableChunkNumber - 1) * fileInfo.resumableChunkSize
 
