@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import model._
 
 object Forms {
-	val fileUploadInfoForm = Form(
+	def fileUploadInfoForm = Form(
 		mapping(
 			"resumableChunkNumber" -> number,
 			"resumableChunkSize" -> number,
