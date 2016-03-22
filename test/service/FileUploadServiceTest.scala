@@ -44,7 +44,7 @@ class FileUploadServiceTest extends FlatSpec {
 		} finally file.delete()
 	}
 
-	"The FileUploadService" should "handle parts of a file" in withFile { (tmpFile, fileUploadService) =>
+	"The FileUploadService" should "handle all parts of a file" in withFile { (tmpFile, fileUploadService) =>
 		val fileSegments = FileToFileUploadInfos(tmpFile)
 		val allBytes = Files.readAllBytes(tmpFile.toPath())
 		fileSegments.foreach { segment =>
@@ -59,5 +59,63 @@ class FileUploadServiceTest extends FlatSpec {
 		}
 		val rafBytes = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
 		assertResult(allBytes)(rafBytes)
+	}
+
+	it should "handle out of order file parts" in withFile { (tmpFile, fileUploadService) =>
+		val fileSegments = FileToFileUploadInfos(tmpFile)
+		val allBytes = Files.readAllBytes(tmpFile.toPath())
+		val (evenSegments, oddSegments) = fileSegments.partition(_.resumableChunkNumber % 2 == 0)
+		evenSegments.foreach { segment =>
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+		}
+		oddSegments.foreach { segment =>
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+		}
+		val rafBytes = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
+		assertResult(allBytes)(rafBytes)
+	}
+
+	it should "handle uploading the same part twice" in withFile { (tmpFile, fileUploadService) =>
+		val fileSegments = FileToFileUploadInfos(tmpFile)
+		val allBytes = Files.readAllBytes(tmpFile.toPath())
+		val (evenSegments, oddSegments) = fileSegments.partition(_.resumableChunkNumber % 2 == 0)
+		evenSegments.foreach { segment =>
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+		}
+		oddSegments.foreach { segment =>
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+		}
+		val rafBytes = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
+		assertResult(allBytes)(rafBytes)
+		evenSegments.foreach { segment =>
+			val bytesToUpload = allBytes.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			fileUploadService.savePartialFile(bytesToUpload, segment)
+			val partialRAF = Files.readAllBytes(new File(fileUploadService.fileNameFor(segment)).toPath())
+			val uploadedBytes = partialRAF.drop((segment.resumableChunkNumber - 1) * segment.resumableChunkSize).take(segment.resumableChunkSize)
+			assertResult(bytesToUpload)(uploadedBytes)
+			assertResult(true)(fileUploadService.isPartialUploadComplete(segment))
+		}
+		val rafBytes2 = Files.readAllBytes(new File(fileUploadService.fileNameFor(fileSegments(0))).toPath())
+		assertResult(rafBytes)(rafBytes2)
 	}
 }
