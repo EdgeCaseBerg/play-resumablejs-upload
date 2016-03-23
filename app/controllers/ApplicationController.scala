@@ -5,6 +5,7 @@ import play.api.mvc._
 import play.api.Logger
 
 import service._
+import form._
 
 object FileUploadController extends Controller {
 
@@ -18,8 +19,19 @@ object FileUploadController extends Controller {
 		BadRequest("Ok")
 	}
 
-	def uploadTest = Action {
-		BadRequest("Ok")
+	def uploadTest = Action { implicit request =>
+		Forms.fileUploadInfoForm.bindFromRequest.fold(
+			formWithErrors => {
+				BadRequest(formWithErrors.toString)
+			},
+			fileUploadInfo => {
+				if (fileUploadService.isPartialUploadComplete(fileUploadInfo)) {
+					Ok
+				} else {
+					NotFound
+				}
+			}
+		)
 	}
 
 }
