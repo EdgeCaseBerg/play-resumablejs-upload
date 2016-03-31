@@ -27,11 +27,10 @@ object FileUploadController extends Controller {
 				request.body.file("file") match {
 					case None => BadRequest("No file")
 					case Some(file) =>
-						val tmpName = Play.application(Play.current).path.getAbsolutePath + "/" + fileUploadInfo.resumableIdentifier + file.filename
-						file.ref.moveTo(new File(tmpName))
-						val bytes = Files.readAllBytes(new File(tmpName) toPath ())
+						val bytes = Files.readAllBytes(file.ref.file.toPath())
 						fileUploadService.savePartialFile(bytes, fileUploadInfo)
 						fileUploadService.isPartialUploadComplete(fileUploadInfo)
+						file.ref.clean()
 						Ok
 				}
 			}
