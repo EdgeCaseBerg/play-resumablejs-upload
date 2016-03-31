@@ -36,7 +36,7 @@ class FileUploadServiceTest extends FlatSpec {
 
 	def withFile(testCode: (File, FileUploadService) => Any) {
 		val file = File.createTempFile("/tmp", ".tmpfile")
-		val lines = (for (i <- 0 to 10) yield i).mkString
+		val lines = (for (i <- 0 to 1000) yield i).mkString
 		Files.write(file.toPath, lines.getBytes, StandardOpenOption.WRITE);
 		val fileUploadService = new FileUploadService("/tmp")
 		try {
