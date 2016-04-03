@@ -8,6 +8,7 @@
 	<body>
 		<a id="browseButton" href="#">Browse and Upload</a>
 		<a id="upLoadButton" href="#">Upload</a>
+		<div id="uploadprogress">0 %</div>
 	</body>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/resumable.js/1.0.2/resumable.min.js">
 	</script>
@@ -19,7 +20,18 @@
 			});
 			r.assignBrowse(document.getElementById('browseButton'));
 			document.getElementById('upLoadButton').onclick = function(){
-				r.upload()
+				r.upload();
+				var timeout = null;
+				timeout = setInterval(function() {
+					if(r.progress() == 1.00) {
+						clearInterval(timeout);
+					}
+					updateProgressTo(r.progress() * 100);
+				}, 500);
+			}
+			var progress = document.getElementById('uploadprogress');
+			function updateProgressTo(text) {
+				progress.textContent = text;
 			}
 		}
 	</script>
