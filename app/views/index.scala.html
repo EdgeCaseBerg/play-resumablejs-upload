@@ -21,18 +21,27 @@
 			r.assignBrowse(document.getElementById('browseButton'));
 			document.getElementById('upLoadButton').onclick = function(){
 				r.upload();
-				var timeout = null;
-				timeout = setInterval(function() {
-					if(r.progress() == 1.00) {
-						clearInterval(timeout);
-					}
-					updateProgressTo(r.progress() * 100);
-				}, 500);
+				// var timeout = null;
+				// timeout = setInterval(function() {
+				// 	if(r.progress() == 1.00) {
+				// 		clearInterval(timeout);
+				// 	}
+				// 	updateProgressTo(r.progress() * 100);
+				// }, 500);
 			}
 			var progress = document.getElementById('uploadprogress');
 			function updateProgressTo(text) {
 				progress.textContent = text;
 			}
+			r.on('fileAdded', function(file){ 
+
+			});
+			r.on('fileProgress', function(file) {
+
+			});
+			r.on('progress', function() {
+				updateProgressTo(r.progress())
+			});
 		}
 	</script>
 </html>
