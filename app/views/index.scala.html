@@ -21,13 +21,6 @@
 			r.assignBrowse(document.getElementById('browseButton'));
 			document.getElementById('upLoadButton').onclick = function(){
 				r.upload();
-				// var timeout = null;
-				// timeout = setInterval(function() {
-				// 	if(r.progress() == 1.00) {
-				// 		clearInterval(timeout);
-				// 	}
-				// 	updateProgressTo(r.progress() * 100);
-				// }, 500);
 			}
 			var progress = document.getElementById('uploadprogress');
 			function updateProgressTo(text) {
