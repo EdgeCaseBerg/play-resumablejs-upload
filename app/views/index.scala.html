@@ -9,6 +9,8 @@
 		<a id="browseButton" href="#">Browse and Upload</a>
 		<a id="upLoadButton" href="#">Upload</a>
 		<div id="uploadprogress">0 %</div>
+		<ul id="filestobeuploaded">
+		</ul>
 	</body>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/resumable.js/1.0.2/resumable.min.js">
 	</script>
@@ -26,8 +28,19 @@
 			function updateProgressTo(text) {
 				progress.textContent = text;
 			}
-			r.on('fileAdded', function(file){ 
 
+			var filesSpace = document.getElementById('filestobeuploaded');
+			function addFileNameToList(name, id) {
+				var li = document.createElement('li');
+				li.id = id
+				li.textContent = name;
+				filesSpace.appendChild(li)
+			}
+
+			
+			r.on('fileAdded', function(file){ 
+				console.log(file.fileName, file.uniqueIdentifier)
+				addFileNameToList(file.fileName, file.uniqueIdentifier)
 			});
 			r.on('fileProgress', function(file) {
 
