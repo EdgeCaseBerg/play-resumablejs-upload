@@ -8,6 +8,7 @@
 	<body>
 		<a id="browseButton" href="#">Browse and Upload</a>
 		<a id="upLoadButton" href="#">Upload</a>
+		<a id="pauseButton" href="#">Pause Uploads</a>
 		<div id="uploadprogress">0 %</div>
 		<ul id="filestobeuploaded">
 		</ul>
@@ -20,15 +21,21 @@
 				target:'/upload', 
 				query:{}
 			});
+			
 			r.assignBrowse(document.getElementById('browseButton'));
 			document.getElementById('upLoadButton').onclick = function(){
 				r.upload();
 			}
+			
 			var progress = document.getElementById('uploadprogress');
 			function updateTotalProgressTo(text) {
 				progress.textContent = text;
 			}
 
+			document.getElementById('pauseButton').onclick = function(){
+				r.pause();
+			}
+			
 			var filesSpace = document.getElementById('filestobeuploaded');
 			function addFileNameToList(name, id) {
 				var progressBar = document.createElement('span');
