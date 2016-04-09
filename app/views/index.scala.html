@@ -25,28 +25,36 @@
 				r.upload();
 			}
 			var progress = document.getElementById('uploadprogress');
-			function updateProgressTo(text) {
+			function updateTotalProgressTo(text) {
 				progress.textContent = text;
 			}
 
 			var filesSpace = document.getElementById('filestobeuploaded');
 			function addFileNameToList(name, id) {
+				var progressBar = document.createElement('span');
+				var fileNameSpan = document.createElement('span');
+				progressBar.textContent = '0 %';
+				progressBar.id = id + "-progress";
 				var li = document.createElement('li');
-				li.id = id
-				li.textContent = name;
-				filesSpace.appendChild(li)
+				li.id = id;
+				fileNameSpan.textContent = name;
+				li.appendChild(fileNameSpan);
+				li.appendChild(document.createElement('br'));
+				li.appendChild(progressBar);
+				filesSpace.appendChild(li);
 			}
+
 
 			
 			r.on('fileAdded', function(file){ 
-				console.log(file.fileName, file.uniqueIdentifier)
-				addFileNameToList(file.fileName, file.uniqueIdentifier)
+				addFileNameToList(file.fileName, file.uniqueIdentifier);
 			});
 			r.on('fileProgress', function(file) {
-
+				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
+				progressBarToUpdate.textContent = file.progress(false);
 			});
 			r.on('progress', function() {
-				updateProgressTo(r.progress())
+				updateTotalProgressTo(r.progress());
 			});
 		}
 	</script>
