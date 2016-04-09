@@ -51,10 +51,10 @@
 			});
 			r.on('fileProgress', function(file) {
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
-				progressBarToUpdate.textContent = file.progress(false);
+				progressBarToUpdate.textContent = (file.progress(false) * 100.00) + '%';
 			});
 			r.on('progress', function() {
-				updateTotalProgressTo(r.progress());
+				updateTotalProgressTo((r.progress() * 100.00)+'%');
 			});
 		}
 	</script>
