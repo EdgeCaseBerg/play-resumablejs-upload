@@ -37,25 +37,39 @@
 			}
 			
 			var filesSpace = document.getElementById('filestobeuploaded');
-			function addFileNameToList(name, id) {
-				var progressBar = document.createElement('span');
-				var fileNameSpan = document.createElement('span');
-				progressBar.textContent = '0 %';
-				progressBar.id = id + "-progress";
+			function addFileToList(file) {
 				var li = document.createElement('li');
+
+				var progressBar = document.createElement('span');
+				progressBar.textContent = '0 %';
+				progressBar.id = file.uniqueIdentifier + "-progress";
+
+				var fileNameSpan = document.createElement('span');
+				fileNameSpan.textContent = file.fileName;
+
+				var cancelButton = document.createElement('a');
+				cancelButton.href ='#';
+				cancelButton.textContent = 'Cancel';
+				cancelButton.onclick = function() {
+					file.cancel();
+					filesSpace.removeChild(li);
+				}
+				
 				li.setAttribute('style','border: solid black thin;');
-				li.id = id;
-				fileNameSpan.textContent = name;
+				li.id = file.uniqueIdentifier;
 				li.appendChild(fileNameSpan);
 				li.appendChild(document.createElement('br'));
 				li.appendChild(progressBar);
+				li.appendChild(document.createElement('br'));
+				li.appendChild(cancelButton);
+
 				filesSpace.appendChild(li);
 			}
 
 
 			
 			r.on('fileAdded', function(file){ 
-				addFileNameToList(file.fileName, file.uniqueIdentifier);
+				addFileToList(file);
 			});
 			r.on('fileProgress', function(file) {
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
