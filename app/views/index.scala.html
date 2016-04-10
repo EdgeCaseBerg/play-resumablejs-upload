@@ -75,9 +75,18 @@
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
 				progressBarToUpdate.textContent = (file.progress(false) * 100.00) + '%';
 			});
+			r.on('fileSuccess', function(file) {
+				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
+				progressBarToUpdate.textContent = 'Upload Complete!';
+			});
+			r.on('cancel', function(file) {
+				console.log('cancel!' + file.uniqueIdentifier)	
+				
+			});
 			r.on('progress', function() {
 				updateTotalProgressTo((r.progress() * 100.00)+'%');
 			});
+
 		}
 	</script>
 </html>
