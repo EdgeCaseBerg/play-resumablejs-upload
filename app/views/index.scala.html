@@ -86,6 +86,10 @@
 			r.on('progress', function() {
 				updateTotalProgressTo((r.progress() * 100.00)+'%');
 			});
+			r.on('fileError', function(file, msg){
+				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
+				progressBarToUpdate.textContent = msg;
+			});
 
 		}
 	</script>
