@@ -9,6 +9,7 @@
 		<a id="browseButton" href="#">Browse and Upload</a>
 		<a id="upLoadButton" href="#">Upload</a>
 		<a id="pauseButton" href="#">Pause Uploads</a>
+		<a id="cancelButton" href="#">Cancel All</a>
 		<div id="uploadprogress">0 %</div>
 		<ul id="filestobeuploaded">
 		</ul>
@@ -66,6 +67,10 @@
 				filesSpace.appendChild(li);
 			}
 
+			document.getElementById('cancelButton').onclick = function() {
+				r.cancel();
+			}
+
 
 			
 			r.on('fileAdded', function(file){ 
@@ -80,8 +85,10 @@
 				progressBarToUpdate.textContent = 'Upload Complete!';
 			});
 			r.on('cancel', function(file) {
-				console.log('cancel!' + file.uniqueIdentifier)	
-				
+				var anchors = filesSpace.getElementsByTagName('a');
+				for (var i = anchors.length - 1; i >= 0; i--) {
+					anchors[i].click();
+				};
 			});
 			r.on('progress', function() {
 				updateTotalProgressTo((r.progress() * 100.00)+'%');
