@@ -123,6 +123,10 @@
 				errorMsg.textContent = message;
 			});
 
+			r.on('catchAll', function(eventX) {
+				console.log(eventX)
+			});
+
 		}
 	</script>
 </html>
