@@ -23,10 +23,13 @@
 				target:'/upload', 
 				query:{}
 			});
+
+			var retries = 0;
 			
 			r.assignBrowse(document.getElementById('browseButton'));
 			document.getElementById('upLoadButton').onclick = function(){
 				r.upload();
+				retries = 0;
 			}
 			
 			var progress = document.getElementById('uploadprogress');
@@ -70,6 +73,7 @@
 
 			document.getElementById('cancelButton').onclick = function() {
 				r.cancel();
+				retries = 0;
 			}
 
 
@@ -103,9 +107,16 @@
 				errorMsg.textContent = msg;
 			});
 
+			
 			r.on('fileRetry', function(file){
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
 				progressBarToUpdate.textContent = 'Retrying upload';
+				retries++
+				errorMsg.textContent = "Retried " + retries + "time(s)";
+				if(retries > 10) {
+					r.pause();
+					errorMsg.textContent = 'Pausing file upload after ' + retries + ' attempts';
+				}
 			});
 
 			r.on('error', function (message, file) {
