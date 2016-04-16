@@ -44,11 +44,7 @@ class FileUploadService(serviceSavePath: String) {
 	def isPartialUploadComplete(fileInfo: FileUploadInfo): Boolean = {
 		/* Todo: Should we open the RAF and check it? */
 		val key = fileNameFor(fileInfo)
-		if (uploadedParts.contains(key)) {
-			uploadedParts.get(key).contains(fileInfo)
-		} else {
-			false
-		}
+		uploadedParts.contains(key) && uploadedParts.get(key).contains(fileInfo)
 	}
 
 	def isUploadComplete(fileInfo: FileUploadInfo): Boolean = {
