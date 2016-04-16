@@ -29,7 +29,6 @@ object FileUploadController extends Controller {
 					case Some(file) =>
 						val bytes = Files.readAllBytes(file.ref.file.toPath())
 						fileUploadService.savePartialFile(bytes, fileUploadInfo)
-						fileUploadService.isPartialUploadComplete(fileUploadInfo)
 						file.ref.clean()
 						Ok
 				}
