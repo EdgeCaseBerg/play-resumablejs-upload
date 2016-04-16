@@ -35,7 +35,6 @@ object FileUploadController extends Controller {
 				}
 			}
 		)
-
 	}
 
 	def uploadTest = Action { implicit request =>
