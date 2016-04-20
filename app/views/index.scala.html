@@ -61,7 +61,6 @@
 				}
 				
 				li.setAttribute('style','border: solid black thin;');
-				li.id = file.uniqueIdentifier;
 				li.appendChild(fileNameSpan);
 				li.appendChild(document.createElement('br'));
 				li.appendChild(progressBar);
@@ -81,14 +80,16 @@
 			r.on('fileAdded', function(file){ 
 				addFileToList(file);
 			});
+			
 			r.on('fileProgress', function(file) {
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
 				progressBarToUpdate.textContent = (file.progress(false) * 100.00) + '%';
 			});
+
 			r.on('fileSuccess', function(file) {
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
 				progressBarToUpdate.textContent = 'Upload Complete!';
-			});errorMsg
+			});
 
 			var errorMsg = document.getElementById('errorMsg');
 			r.on('cancel', function(file) {
