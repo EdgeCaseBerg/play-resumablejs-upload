@@ -32,11 +32,6 @@
 				retries = 0;
 			}
 			
-			var progress = document.getElementById('uploadprogress');
-			function updateTotalProgressTo(text) {
-				progress.textContent = text;
-			}
-
 			document.getElementById('pauseButton').onclick = function(){
 				r.pause();
 			}
@@ -75,8 +70,6 @@
 				retries = 0;
 			}
 
-
-			
 			r.on('fileAdded', function(file){ 
 				addFileToList(file);
 			});
@@ -99,9 +92,12 @@
 				};
 				errorMsg.textContent = 'Upload canceled';
 			});
+
+			var progress = document.getElementById('uploadprogress');
 			r.on('progress', function() {
-				updateTotalProgressTo((r.progress() * 100.00)+'%');
+				progress.textContent = (r.progress() * 100.00)+'%';
 			});
+			
 			r.on('fileError', function(file, msg){
 				var progressBarToUpdate = document.getElementById(file.uniqueIdentifier + "-progress");
 				progressBarToUpdate.textContent = msg;
