@@ -5,28 +5,30 @@ import model._
 case class FilePart(data: Array[Byte], fileInfo: FileUploadInfo)
 
 trait FilePartSaver {
-	def get(key: String): Option[FilePart]
+	def get(key: String): Set[FilePart]
 
 	def contains(key: String): Boolean
 
-	def put(key: String, filePart: FilePart): Boolean
+	def put(key: String, fileParts: Set[FilePart]): Boolean
 }
 
+import java.util.concurrent.{ ConcurrentMap, ConcurrentHashMap }
+
 object SingleInstanceFilePartSaver extends FilePartSaver {
-	val uploadedParts: ConcurrentMap[String, Set[FileUploadInfo]] = new ConcurrentHashMap(8, 0.9f, 1)
+	val uploadedParts: ConcurrentMap[String, Set[FilePart]] = new ConcurrentHashMap(8, 0.9f, 1)
 
 	def get(key: String) = {
 		if (uploadedParts.containsKey(key)) {
-			Some(uploadedParts.get(key))
+			uploadedParts.get(key)
 		} else {
-			None
+			Set.empty[FilePart]
 		}
 	}
 
-	def contains(key: String) = uploadedParts.contains(key)
+	def contains(key: String) = uploadedParts.containsKey(key)
 
-	def put(key: String, filePart: FilePart) = {
-		uploadedParts.put(key, filePart.fileInfo) //Because this is backed by a single instance we don't store the byte array here
+	def put(key: String, fileParts: Set[FilePart]) = {
+		uploadedParts.put(key, fileParts) //Because this is backed by a single instance we don't store the byte array here
 		uploadedParts.containsKey(key)
 	}
 }
