@@ -12,7 +12,7 @@ import java.nio.file.Files
 
 object FileUploadController extends Controller {
 
-	val fileUploadService = new FileUploadService("tmp/")
+	val fileUploadService = new FileUploadService("tmp/", SingleInstanceFilePartSaver)
 
 	def index = Action { implicit request =>
 		Ok(views.html.index())
