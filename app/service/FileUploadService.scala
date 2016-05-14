@@ -6,13 +6,11 @@ import model._
 import java.util.concurrent.{ ConcurrentMap, ConcurrentHashMap }
 import scala.collection.JavaConversions._
 
-class FileUploadService(serviceSavePath: String) {
+class FileUploadService(serviceSavePath: String, filePartSave: FilePartSaver) {
 
 	val basePath = if (serviceSavePath.endsWith("/")) {
 		serviceSavePath
 	} else { serviceSavePath + "/" }
-
-	val uploadedParts: ConcurrentMap[String, Set[FileUploadInfo]] = new ConcurrentHashMap(8, 0.9f, 1)
 
 	def fileNameFor(fileInfo: FileUploadInfo) = {
 		s"${basePath}${fileInfo.resumableIdentifier}-${fileInfo.resumableFilename}"
@@ -33,25 +31,25 @@ class FileUploadService(serviceSavePath: String) {
 		}
 
 		val key = fileNameFor(fileInfo)
-		if (uploadedParts.containsKey(key)) {
-			val partsUploaded = uploadedParts.get(key)
-			uploadedParts.put(key, partsUploaded + fileInfo)
+		if (filePartSave.contains(key)) {
+			val partsUploaded = filePartSave.get(key)
+			filePartSave.put(key, partsUploaded + FilePart(filePart, fileInfo))
 		} else {
-			uploadedParts.put(key, Set(fileInfo))
+			filePartSave.put(key, Set(FilePart(filePart, fileInfo)))
 		}
 	}
 
 	def isPartialUploadComplete(fileInfo: FileUploadInfo): Boolean = {
 		/* Todo: Should we open the RAF and check it? */
 		val key = fileNameFor(fileInfo)
-		uploadedParts.contains(key) && uploadedParts.get(key).contains(fileInfo)
+		filePartSave.contains(key) && filePartSave.get(key).contains(fileInfo)
 	}
 
 	def isUploadComplete(fileInfo: FileUploadInfo): Boolean = {
 		val key = fileNameFor(fileInfo)
 		val possibleFinishedFile = new RandomAccessFile(key, "r")
 		val fileLength = possibleFinishedFile.length()
-		fileLength == fileInfo.resumableTotalSize && uploadedParts.containsKey(key) && uploadedParts.get(key).size == fileInfo.totalChunks.toInt
+		fileLength == fileInfo.resumableTotalSize && filePartSave.contains(key) && filePartSave.get(key).size == fileInfo.totalChunks.toInt
 	}
 
 }
