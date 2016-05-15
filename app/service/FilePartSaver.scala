@@ -32,3 +32,12 @@ object SingleInstanceFilePartSaver extends FilePartSaver {
 		uploadedParts.containsKey(key)
 	}
 }
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
+object MemcacheBackedFilePartSaver extends FilePartSaver {
+	import shade.memcached._
+
+	lazy val memcached = Memcached(Configuration("127.0.0.1:11211")) //todo make configurable
+
+}
