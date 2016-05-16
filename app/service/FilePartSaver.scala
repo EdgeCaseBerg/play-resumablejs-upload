@@ -34,10 +34,27 @@ object SingleInstanceFilePartSaver extends FilePartSaver {
 }
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 object MemcacheBackedFilePartSaver extends FilePartSaver {
 	import shade.memcached._
 
 	lazy val memcached = Memcached(Configuration("127.0.0.1:11211")) //todo make configurable
+
+	def get(key: String) = {
+		memcached.awaitGet[Set[FilePart]](key) match {
+			case Some(parts) => parts
+			case None => Set.empty[FilePart]
+		}
+	}
+
+	def contains(key: String) = memcached.awaitGet[Set[FilePart]](key).isDefined
+
+	def put(key: String, fileParts: Set[FilePart]) = {
+		memcached.transformAndGet[Set[FilePart]](key, 1.minute) {
+			case Some(existing) => existing ++ fileParts
+			case None => fileParts
+		}
+	}
 
 }
