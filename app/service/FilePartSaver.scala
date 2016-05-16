@@ -52,7 +52,7 @@ object MemcacheBackedFilePartSaver extends FilePartSaver {
 
 	def put(key: String, fileParts: Set[FilePart]) = {
 		memcached.transformAndGet[Set[FilePart]](key, 1.minute) {
-			case Some(existing) => existing ++ fileParts
+			case existing: Some[Set[FilePart]] => existing.get ++ fileParts
 			case None => fileParts
 		}
 	}
