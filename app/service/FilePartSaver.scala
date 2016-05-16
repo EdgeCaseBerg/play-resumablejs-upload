@@ -43,7 +43,7 @@ object MemcacheBackedFilePartSaver extends FilePartSaver {
 
 	def get(key: String) = {
 		memcached.awaitGet[Set[FilePart]](key) match {
-			case Some(parts) => parts
+			case parts: Some[Set[FilePart]] => parts.get
 			case None => Set.empty[FilePart]
 		}
 	}
