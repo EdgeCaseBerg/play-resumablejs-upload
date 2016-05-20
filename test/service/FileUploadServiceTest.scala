@@ -38,7 +38,7 @@ class FileUploadServiceTest extends FlatSpec {
 		val file = File.createTempFile("/tmp", ".tmpfile")
 		val lines = (for (i <- 0 to 1000) yield i).mkString
 		Files.write(file.toPath, lines.getBytes, StandardOpenOption.WRITE);
-		val fileUploadService = new FileUploadService("/tmp")
+		val fileUploadService = new FileUploadService("/tmp", SingleInstanceFilePartSaver)
 		try {
 			testCode(file, fileUploadService)
 		} finally file.delete()
