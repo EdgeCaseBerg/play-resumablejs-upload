@@ -4,8 +4,8 @@ import model._
 
 sealed trait UploadOperations
 
-case class AddFilePart(bytes: Array[Byte], fileInfo: FileUploadInfo) extends UploadOperations
+case class AddFilePart(val bytes: Array[Byte], val fileInfo: FileUploadInfo) extends UploadOperations
 
-case class CheckFilePart(fileInfo: FileUploadInfo) extends UploadOperations
+case class CheckFilePart(val fileInfo: FileUploadInfo) extends UploadOperations
 
-case class CheckIsComplete(fileInfo: FileUploadInfo) extends UploadOperations
+case class CheckIsComplete(val fileInfo: FileUploadInfo) extends UploadOperations
