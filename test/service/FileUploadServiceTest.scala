@@ -35,10 +35,6 @@ object FileToFileUploadInfos {
 class SingleInstanceFileUploadServiceTest() extends FileUploadServiceTest(SingleInstanceFilePartSaver) {
 }
 
-class MemcacheBackedFileUploadServiceTest() extends FileUploadServiceTest(MemcacheBackedFilePartSaver) {
-	//TODO: start a memcache server and such
-}
-
 abstract class FileUploadServiceTest(filePartSaver: FilePartSaver) extends FlatSpec {
 
 	def withFile(testCode: (File, FileUploadService) => Any) {
