@@ -14,8 +14,7 @@ resolvers += "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases/"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-	"org.scalatestplus" %% "play" % "1.2.0" % "test",
-	"com.bionicspirit" %% "shade" % "1.7.2"
+	"org.scalatestplus" %% "play" % "1.2.0" % "test"
 )
 
 scalariformPreferences := scalariformPreferences.value
